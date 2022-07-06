@@ -13,4 +13,4 @@ jobs:
           access_key: ${{ secrets.ACCESSKEY }}
           secret_key: ${{ secrets.SECRETACCESSKEY }}
           region: 'cn-north-4'
-          commandList: 'hcloud ECS NovaListVersions'
+          command_list: 'hcloud ECS NovaListVersions'
