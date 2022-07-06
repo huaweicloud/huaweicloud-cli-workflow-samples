@@ -26,7 +26,7 @@
 ```yaml
 jobs:
   List-Versions:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: List Versions Of ECS By KooCLI
         uses: huaweicloud/huaweicloud-cli-action@v1.0.0
@@ -34,8 +34,7 @@ jobs:
           access_key: ${{ secrets.ACCESSKEY }}
           secret_key: ${{ secrets.SECRETACCESSKEY }}
           region: 'cn-north-4'
-          command_list: 'hcloud ECS NovaListVersions' 
-          # 因为命令没有指定cli-region参数，所以查询了默认配置中的region'cn-north-4'
+          command_list: 'hcloud ECS NovaListVersions'
 ```
 详见[ECS-list-versions.yml](./.github/workflows/ECS-list-versions.yml)  
 ### 2、多条命令
@@ -43,7 +42,7 @@ jobs:
 ```yaml
 jobs:
   Create-Show-Tags:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Create and Show Tags of ECS By KooCLI
         uses: huaweicloud/huaweicloud-cli-action@v1.0.0
@@ -52,24 +51,44 @@ jobs:
           secret_key: ${{ secrets.SECRETACCESSKEY }}
           region: 'cn-north-4'
           command_list: |
-            hcloud ECS BatchCreateServerTags --cli-region="cn-east-3" --project_id="0*******************b" --server_id="123" --action="create" --tags.1.value="value" --tags.1.key="key"
-            hcloud ECS ShowServerTags --cli-region="cn-east-3" --project_id="0*******************b" --server_id="123"
+            hcloud ECS BatchCreateServerTags --cli-region="cn-north-4" --project_id="0*******************b" --server_id="123" --action="create" --tags.1.value="value" --tags.1.key="key"
+            hcloud ECS ShowServerTags --cli-region="cn-north-4" --project_id="0*******************b" --server_id="123"
 ```
 详见[ECS-create-show-tags.yml](./.github/workflows/ECS-create-show-tags.yml)  
 ### 3、安装成功后，在其他位置使用KooCLI
-成功安装KooCLI后，使用**代码检查（CodeCheck）** 服务，新建检查任务（CreateTask），并根据任务ID，执行代码检查任务（RunTask）并查询缺陷概要（ShowTaskDetail）
+成功安装KooCLI，在进行其他操作后，使用**代码检查（CodeCheck）** 服务，新建检查任务（CreateTask），并根据任务ID，执行代码检查任务（RunTask）并查询缺陷概要（ShowTaskDetail）
 ```yaml
 jobs:
   Setup-KooCLI-And-Run-Codecheck:
     runs-on: ubuntu-latest
     steps:
+      # 代码检出
+      - name: checkout
+        uses: actions/checkout@v2
+
+      # 安装KooCLI
       - name: Setup KooCLI
         uses: huaweicloud/huaweicloud-cli-action@v1.0.0
         with:
           access_key: ${{ secrets.ACCESSKEY }}
           secret_key: ${{ secrets.SECRETACCESSKEY }}
           region: 'cn-north-4'
+
+      # 查询KooCLI配置项
+      - run: hcloud configure list
+
+      - name: Upload File to OBS
+        uses: huaweicloud/obs-helper@v1.2.0
+        with:
+          access_key: ${{ secrets.ACCESSKEY }}
+          secret_key: ${{ secrets.SECRETACCESSKEY }}
+          region: 'cn-north-4'
+          bucket_name: 'bucket-test'
+          local_file_path: 'local_file'
+          obs_file_path: ''
+          operation_type: 'upload'
           
+      # 调用KooCLI，执行代码检查
       - name: Run CodeCheck Task
         run: |
           hcloud CodeCheck CreateTask --cli-region="cn-north-4" --project_id="your_project_id" --rule_sets.1.language="rule_language" --git_branch="your_branch" --language.1="your_language" --git_url="your_repository_url"
