@@ -77,6 +77,7 @@ jobs:
       # 查询KooCLI配置项
       - run: hcloud configure list
 
+      # 可以进行任意其他操作
       - name: Upload File to OBS
         uses: huaweicloud/obs-helper@v1.2.0
         with:
