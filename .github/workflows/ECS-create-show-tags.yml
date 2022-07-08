@@ -1,4 +1,4 @@
-name: Create and Show Tags of ECS By KooCLI
+name: Create and Show Tags of ECS By KooCLI By KooCLI
 on:
   push:
     branches:
@@ -13,6 +13,6 @@ jobs:
           access_key: ${{ secrets.ACCESSKEY }}
           secret_key: ${{ secrets.SECRETACCESSKEY }}
           region: 'cn-north-4'
-          command_list: |
+          commandList: |
             hcloud ECS BatchCreateServerTags --cli-region="cn-east-3" --project_id="0*******************b" --server_id="123" --action="create" --tags.1.value="value" --tags.1.key="key"
             hcloud ECS ShowServerTags --cli-region="cn-east-3" --project_id="0*******************b" --server_id="123"
