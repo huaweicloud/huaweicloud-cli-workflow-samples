@@ -76,9 +76,21 @@ jobs:
 
       # 查询KooCLI配置项
       - run: hcloud configure list
+
+      # 可以进行任意其他操作
+      - name: Upload File to OBS
+        uses: huaweicloud/obs-helper@v1.2.0
+        with:
+          access_key: ${{ secrets.ACCESSKEY }}
+          secret_key: ${{ secrets.SECRETACCESSKEY }}
+          region: 'cn-north-4'
+          bucket_name: 'bucket-test'
+          local_file_path: 'local_file'
+          obs_file_path: ''
+          operation_type: 'upload'
           
       # 调用KooCLI，执行代码检查
-      - name: Run CodeCheck Task By KooCLI
+      - name: Run CodeCheck Task
         run: |
           hcloud CodeCheck CreateTask --cli-region="cn-north-4" --project_id="your_project_id" --rule_sets.1.language="rule_language" --git_branch="your_branch" --language.1="your_language" --git_url="your_repository_url"
           hcloud CodeCheck RunTask --cli-region="cn-north-4" --task_id="your_codecheck_task_id"
