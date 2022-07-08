@@ -1,4 +1,4 @@
-name: Setup KooCLI And Upload File to OBS And Run CodeCheck
+name: List Versions of ECS With Default Region By KooCLI
 on:
   push:
     branches:
@@ -7,33 +7,14 @@ jobs:
   Setup-KooCLI-And-Run-Codecheck:
     runs-on: ubuntu-latest
     steps:
-      # 代码检出
-      - name: checkout
-        uses: actions/checkout@v2
-
-      # 安装KooCLI
+   
       - name: Setup KooCLI
         uses: huaweicloud/huaweicloud-cli-action@v1.0.0
         with:
           access_key: ${{ secrets.ACCESSKEY }}
           secret_key: ${{ secrets.SECRETACCESSKEY }}
           region: 'cn-north-4'
-
-      # 查询KooCLI配置项
-      - run: hcloud configure list
-
-      - name: Upload File to OBS
-        uses: huaweicloud/obs-helper@v1.2.0
-        with:
-          access_key: ${{ secrets.ACCESSKEY }}
-          secret_key: ${{ secrets.SECRETACCESSKEY }}
-          region: 'cn-north-4'
-          bucket_name: 'bucket-test'
-          local_file_path: 'local_file'
-          obs_file_path: ''
-          operation_type: 'upload'
           
-      # 调用KooCLI，执行代码检查
       - name: Run CodeCheck Task
         run: |
           hcloud CodeCheck CreateTask --cli-region="cn-north-4" --project_id="your_project_id" --rule_sets.1.language="rule_language" --git_branch="your_branch" --language.1="your_language" --git_url="your_repository_url"

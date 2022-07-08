@@ -5,7 +5,7 @@ on:
         master
 jobs:
   Create-Show-Tags:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Create and Show Tags
         uses: huaweicloud/huaweicloud-cli-action@v1.0.0
@@ -14,5 +14,5 @@ jobs:
           secret_key: ${{ secrets.SECRETACCESSKEY }}
           region: 'cn-north-4'
           command_list: |
-            hcloud ECS BatchCreateServerTags --cli-region="cn-north-4" --project_id="0*******************b" --server_id="123" --action="create" --tags.1.value="value" --tags.1.key="key"
-            hcloud ECS ShowServerTags --cli-region="cn-north-4" --project_id="0*******************b" --server_id="123"
+            hcloud ECS BatchCreateServerTags --cli-region="cn-east-3" --project_id="0*******************b" --server_id="123" --action="create" --tags.1.value="value" --tags.1.key="key"
+            hcloud ECS ShowServerTags --cli-region="cn-east-3" --project_id="0*******************b" --server_id="123"
