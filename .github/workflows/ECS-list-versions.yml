@@ -1,0 +1,16 @@
+name: List Versions of ECS With Default Region By KooCLI
+on:
+  push:
+    branches:
+        master
+jobs:
+  List-Versions:
+    runs-on: windows-latest
+    steps:
+      - name: List Versions
+        uses: huaweicloud/huaweicloud-cli-action@v1.0.0
+        with:
+          access_key: ${{ secrets.ACCESSKEY }}
+          secret_key: ${{ secrets.SECRETACCESSKEY }}
+          region: 'cn-north-4'
+          command_list: 'hcloud ECS NovaListVersions'
