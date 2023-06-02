@@ -1,0 +1,34 @@
+name: Setup KooCLI And Upload File to OBS And Run CodeCheck
+on:
+  push:
+    branches:
+        master
+jobs:
+  Setup-KooCLI-And-Run-Codecheck:
+    runs-on: ubuntu-latest
+    steps:
+      # 代码检出
+      - name: checkout
+        uses: actions/checkout@v2
+      
+      # 统一鉴权
+      - name: Authenticate to Huawei Cloud
+        uses: huaweicloud/auth-action@v1.0.0
+        with: 
+          access_key_id: ${{ secrets.ACCESSKEY }} 
+          secret_access_key: ${{ secrets.SECRETACCESSKEY }}
+          region: '<region>'
+
+      # 安装KooCLI
+      - name: Set up KooCLI
+        uses: huaweicloud/huaweicloud-cli-action@v1.0.0
+
+      # 查询KooCLI配置项
+      - run: hcloud configure list
+          
+      # 调用KooCLI，执行代码检查
+      - name: Run CodeCheck Task by KooCLI
+        run: |
+          hcloud CodeCheck CreateTask --cli-region="cn-north-4" --project_id="your_project_id" --rule_sets.1.language="rule_language" --git_branch="your_branch" --language.1="your_language" --git_url="your_repository_url"
+          hcloud CodeCheck RunTask --cli-region="cn-north-4" --task_id="your_codecheck_task_id"
+          hcloud CodeCheck ShowTaskDetail --cli-region="cn-north-4" --task_id="your_codecheck_task_id"
